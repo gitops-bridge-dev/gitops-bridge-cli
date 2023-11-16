@@ -39,9 +39,10 @@ const (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gobctl",
-	Short: "GitOps Bridge CLI tool",
-	Long:  `This is a CLI tool for GitOps Bridge. It is used to manage the GitOps Bridge.`,
+	Use:     "gobctl",
+	Short:   "GitOps Bridge CLI tool",
+	Version: "0.0.1",
+	Long:    `This is a CLI tool for GitOps Bridge. It is used to manage the GitOps Bridge.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

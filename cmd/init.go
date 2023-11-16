@@ -44,7 +44,7 @@ var initCmd = &cobra.Command{
 			if f, err := gobgh.ForkRepo(githubToken, GobOrgName, r); err != nil {
 				Log.Fatal(err)
 			} else {
-				fmt.Println(f)
+				Log.Info(fmt.Sprintf("Repo %s created", f))
 			}
 		}
 	},

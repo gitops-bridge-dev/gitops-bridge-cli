@@ -18,8 +18,10 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/gitops-bridge-dev/gitops-bridge-cli/pkg/gobgh"
 	"github.com/gitops-bridge-dev/gitops-bridge-cli/pkg/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // initCmd represents the init command
@@ -28,11 +30,23 @@ var initCmd = &cobra.Command{
 	Short: "Bootstrap your GitOps Bridge repository",
 	Long:  `Using the init command you can bootstrap your GitOps Bridge repository.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		addonRepo, err := cmd.Flags().GetString("addon")
-		utils.CheckError(err)
+		// Get variables
+		addonRepo := viper.GetString("addon")
+		githubToken := viper.GetString("github-token")
 
-		// Placeholder
-		fmt.Println(addonRepo)
+		// Verify the add on repo provided
+		if err := utils.VerifyAddOnRepo(addonRepo); err != nil {
+			Log.Fatal(err)
+		}
+
+		// Fork the repos for the user
+		for _, r := range []string{addonRepo, GobRepo} {
+			if f, err := gobgh.ForkRepo(githubToken, GobOrgName, r); err != nil {
+				Log.Fatal(err)
+			} else {
+				fmt.Println(f)
+			}
+		}
 	},
 }
 
@@ -41,4 +55,9 @@ func init() {
 
 	// addon is the name of the add on repo to be used
 	initCmd.PersistentFlags().String("addon", "", "The addon repo to be used")
+	initCmd.PersistentFlags().String("github-token", "", "GitHub token to be used")
+
+	// Bind the flags to viper
+	viper.BindPFlag("addon", initCmd.PersistentFlags().Lookup("addon"))
+	viper.BindPFlag("github-token", initCmd.PersistentFlags().Lookup("github-token"))
 }

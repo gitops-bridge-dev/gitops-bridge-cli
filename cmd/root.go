@@ -18,12 +18,24 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var Log *logrus.Logger = logrus.New()
+
+// Define constants
+const (
+	GobGitRepo string = "https://github.com"
+	GobOrgName string = "gitops-bridge-dev"
+	GobURI     string = GobGitRepo + "/" + GobOrgName
+	GobRepo    string = "gitops-bridge"
+	GobRepoURI string = GobURI + "/" + GobRepo
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -64,6 +76,12 @@ func initConfig() {
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".gobctl")
 	}
+
+	// Add prefix for your CLI. This will turn into "GOB_" for environment variables that you can use.
+	viper.SetEnvPrefix("GOB")
+
+	// Convert dashes to underscores for environment variables.
+	viper.SetEnvKeyReplacer(strings.NewReplacer(`-`, `_`))
 
 	viper.AutomaticEnv() // read in environment variables that match
 

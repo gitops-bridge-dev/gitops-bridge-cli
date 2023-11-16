@@ -16,11 +16,18 @@ limitations under the License.
 
 package utils
 
-import "log"
+import "errors"
 
-// CheckError checks if the error is nil or not
-func CheckError(e error) {
-	if e != nil {
-		log.Fatal(e)
+// VerifyAddOnRepo verifies the add on repo
+func VerifyAddOnRepo(s string) error {
+	// Switch statement to check the add on repo
+	switch s {
+	case "gitops-bridge-argocd-control-plane-template":
+		return nil
+	case "":
+		return errors.New("please provide an addon repo")
+	default:
+		// return an error if the add on repo is not valid
+		return errors.New("invalid addon repo")
 	}
 }
